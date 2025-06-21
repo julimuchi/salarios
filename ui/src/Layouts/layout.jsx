@@ -10,7 +10,7 @@ function SidebarFooter() {
                 variant="caption"
                 sx={{ m: 1, whiteSpace: "nowrap", overflow: "hidden" }}
             >
-                Aprendisaje profundo
+                Aprendizaje profundo
             </Typography>
         </Stack>
     );
