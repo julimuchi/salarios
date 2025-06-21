@@ -14,31 +14,50 @@ import { useState } from "react";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import ContentPasteSearchIcon from "@mui/icons-material/ContentPasteSearch";
 import { Loader } from ".";
-import { COUNTRIES, JOB_POSITIONS, LEVELS } from "../constants";
+import {
+    COMPANY_SIZES,
+    COMPANY_COUNTRIES,
+    EMPLOYEE_RESIDENCES,
+    JOB_POSITIONS,
+    LEVELS,
+    MODALITIES,
+} from "../constants";
 
 const JOB_POSITION = "job_position";
 const LEVEL = "Level";
-const COUNTRY = "country";
+const EMPLOYEE_RESIDENCE = "employee_residence";
+const COUNTRY_COMPANY = "country_company";
+const COMPANY_SIZE = "company_size";
+const MODALITY = "modalidad";
 
 const formLabels = {
     [JOB_POSITION]: "Posicion",
     [LEVEL]: "Experiencia",
-    [COUNTRY]: "Pais",
+    [COUNTRY_COMPANY]: "Origen de la empresa",
+    [EMPLOYEE_RESIDENCE]: "Pais de residencia",
+    [COMPANY_SIZE]: "Tamaño de la empresa",
+    [MODALITY]: "Modalidad",
 };
 
 const emptyForm = {
     [JOB_POSITION]: "",
     [LEVEL]: "",
-    [COUNTRY]: "",
+    [EMPLOYEE_RESIDENCE]: "",
+    [COUNTRY_COMPANY]: "",
+    [COMPANY_SIZE]: "",
+    [MODALITY]: "",
 };
 
 const emptyFormErrors = {
     [JOB_POSITION]: null,
     [LEVEL]: null,
-    [COUNTRY]: null,
+    [COUNTRY_COMPANY]: null,
+    [EMPLOYEE_RESIDENCE]: null,
+    [COMPANY_SIZE]: null,
+    [MODALITY]: null,
 };
 
-const Form = () => {
+const Form = ({ setSalary }) => {
     const [form, setForm] = useState(emptyForm);
     const [formErrors, setFormErrors] = useState(emptyFormErrors);
     const [error, setError] = useState(null);
@@ -53,21 +72,7 @@ const Form = () => {
             setError(null);
             setFormErrors(emptyFormErrors);
 
-            // dummy
-            const response = await new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    if (form.job_position) {
-                        resolve({ success: true });
-                    } else {
-                        reject(new Error("Validation error"));
-                    }
-                }, 1000);
-            });
-
-            if (response.success) {
-                // Reset form after successful submission
-                setForm(emptyForm);
-            }
+            setSalary("1000");
         } catch (err) {
             console.error("Error al enviar el formulario:", err);
             setError(
@@ -80,14 +85,23 @@ const Form = () => {
 
     const isValidForm = () => {
         const errors = {};
-        if (!form[JOB_POSITION] || form[JOB_POSITION].trim() === "") {
+        if (!form[JOB_POSITION]) {
             errors[JOB_POSITION] = "Este campo es obligatorio";
         }
-        if (!form[LEVEL] || form[LEVEL].trim() === "") {
+        if (!form[LEVEL]) {
             errors[LEVEL] = "Este campo es obligatorio";
         }
-        if (!form[COUNTRY] || form[COUNTRY].trim() === "") {
-            errors[COUNTRY] = "Este campo es obligatorio";
+        if (!form[COUNTRY_COMPANY]) {
+            errors[COUNTRY_COMPANY] = "Este campo es obligatorio";
+        }
+        if (!form[EMPLOYEE_RESIDENCE]) {
+            errors[EMPLOYEE_RESIDENCE] = "Este campo es obligatorio";
+        }
+        if (!form[COMPANY_SIZE]) {
+            errors[COMPANY_SIZE] = "Este campo es obligatorio";
+        }
+        if (!form[MODALITY]) {
+            errors[MODALITY] = "Este campo es obligatorio";
         }
 
         setFormErrors(errors);
@@ -110,6 +124,7 @@ const Form = () => {
         setForm(emptyForm);
         setFormErrors(emptyFormErrors);
         setError(null);
+        setSalary(null);
     };
 
     if (loading) {
@@ -119,9 +134,11 @@ const Form = () => {
     return (
         <Box p={2} component={Paper} mt={2} mb={2}>
             <Box mb={2}>
-                <Typography variant="h6" gutterBottom>
-                    Complete los datos de su busqueda
-                </Typography>
+                <Box>
+                    <Typography variant="h6" gutterBottom>
+                        Complete los datos del empleado
+                    </Typography>
+                </Box>
                 {error && (
                     <Box mt={2} mb={2}>
                         <Alert severity="error">{error}</Alert>
@@ -174,24 +191,97 @@ const Form = () => {
                             fullWidth
                         />
                     </Grid>
-
                     <Grid size={{ xs: 12, md: 4 }}>
                         <Autocomplete
-                            options={COUNTRIES}
+                            options={EMPLOYEE_RESIDENCES}
                             getOptionLabel={(option) => option.name}
-                            value={form[COUNTRY] || null}
-                            name={COUNTRY}
+                            name={EMPLOYEE_RESIDENCE}
+                            value={form[EMPLOYEE_RESIDENCE] || null}
                             onChange={(_, newValue) => {
-                                handleChange(COUNTRY, newValue);
+                                handleChange(EMPLOYEE_RESIDENCE, newValue);
                             }}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    name={COUNTRY}
-                                    label={formLabels[COUNTRY]}
+                                    label={formLabels[EMPLOYEE_RESIDENCE]}
                                     required
-                                    error={!!formErrors[COUNTRY]}
-                                    helperText={formErrors[COUNTRY]}
+                                    value={form[EMPLOYEE_RESIDENCE]}
+                                    error={!!formErrors[EMPLOYEE_RESIDENCE]}
+                                    helperText={formErrors[EMPLOYEE_RESIDENCE]}
+                                    name={EMPLOYEE_RESIDENCE}
+                                />
+                            )}
+                            fullWidth
+                        />
+                    </Grid>
+                </Grid>
+                <Box mt={2}>
+                    <Typography variant="h6" gutterBottom>
+                        Complete los datos de las companias que le interesan
+                    </Typography>
+                </Box>
+                <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                        <Autocomplete
+                            options={COMPANY_COUNTRIES}
+                            getOptionLabel={(option) => option.name}
+                            value={form[COUNTRY_COMPANY] || null}
+                            name={COUNTRY_COMPANY}
+                            onChange={(_, newValue) => {
+                                handleChange(COUNTRY_COMPANY, newValue);
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    name={COUNTRY_COMPANY}
+                                    label={formLabels[COUNTRY_COMPANY]}
+                                    required
+                                    error={!!formErrors[COUNTRY_COMPANY]}
+                                    helperText={formErrors[COUNTRY_COMPANY]}
+                                />
+                            )}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                        <Autocomplete
+                            options={COMPANY_SIZES}
+                            getOptionLabel={(option) => option.name}
+                            value={form[COMPANY_SIZE] || null}
+                            name={COMPANY_SIZE}
+                            onChange={(_, newValue) => {
+                                handleChange(COMPANY_SIZE, newValue);
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    name={COMPANY_SIZE}
+                                    label={formLabels[COMPANY_SIZE]}
+                                    required
+                                    error={!!formErrors[COMPANY_SIZE]}
+                                    helperText={formErrors[COMPANY_SIZE]}
+                                />
+                            )}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                        <Autocomplete
+                            options={MODALITIES}
+                            getOptionLabel={(option) => option.name}
+                            value={form[MODALITY] || null}
+                            name={MODALITY}
+                            onChange={(_, newValue) => {
+                                handleChange(MODALITY, newValue);
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    name={MODALITY}
+                                    label={formLabels[MODALITY]}
+                                    required
+                                    error={!!formErrors[MODALITY]}
+                                    helperText={formErrors[MODALITY]}
                                 />
                             )}
                             fullWidth

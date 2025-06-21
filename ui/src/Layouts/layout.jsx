@@ -1,6 +1,14 @@
 import { Outlet } from "react-router-dom";
-import { DashboardLayout } from "@toolpad/core/DashboardLayout";
-import { Chip, Container, Divider, Stack, Typography } from "@mui/material";
+import { DashboardLayout, ThemeSwitcher } from "@toolpad/core/DashboardLayout";
+import { Container, Divider, Stack, Typography } from "@mui/material";
+
+const ToolbarActions = () => {
+    return (
+        <Stack direction="row" alignItems="center" spacing={2}>
+            <ThemeSwitcher />
+        </Stack>
+    );
+};
 
 function SidebarFooter() {
     return (
@@ -20,8 +28,7 @@ export default function Layout() {
     return (
         <DashboardLayout
             slots={{
-                toolbarActions: () => {},
-
+                toolbarActions: ToolbarActions,
                 sidebarFooter: SidebarFooter,
             }}
         >
