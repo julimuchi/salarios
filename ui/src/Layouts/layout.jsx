@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { DashboardLayout, ThemeSwitcher } from "@toolpad/core/DashboardLayout";
+import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { Chip, Container, Divider, Stack, Typography } from "@mui/material";
 
 function SidebarFooter() {
@@ -16,20 +16,11 @@ function SidebarFooter() {
     );
 }
 
-const ToolbarActions = () => {
-    return (
-        <Stack direction="row" alignItems="center" spacing={2}>
-            <Chip size="small" label="BETA" color="success" />
-            <ThemeSwitcher />
-        </Stack>
-    );
-};
-
 export default function Layout() {
     return (
         <DashboardLayout
             slots={{
-                toolbarActions: ToolbarActions,
+                toolbarActions: () => {},
 
                 sidebarFooter: SidebarFooter,
             }}
