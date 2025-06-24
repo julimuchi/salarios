@@ -29,7 +29,7 @@ const router = createBrowserRouter([
                         Component: Members,
                     },
                     {
-                        path: "/graficos",
+                        path: "/graficos/:graph",
                         Component: Graphics,
                     },
                 ],
