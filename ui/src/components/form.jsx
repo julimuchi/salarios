@@ -21,6 +21,7 @@ import {
     JOB_POSITIONS,
     LEVELS,
     MODALITIES,
+    CONTRACT_TYPES,
 } from "../constants";
 
 const JOB_POSITION = "job_position";
@@ -29,6 +30,7 @@ const EMPLOYEE_RESIDENCE = "employee_residence";
 const COUNTRY_COMPANY = "country_company";
 const COMPANY_SIZE = "company_size";
 const MODALITY = "modalidad";
+const CONTRACT_TYPE = "contract_type";
 
 const formLabels = {
     [JOB_POSITION]: "Posicion",
@@ -37,6 +39,7 @@ const formLabels = {
     [EMPLOYEE_RESIDENCE]: "Pais de residencia",
     [COMPANY_SIZE]: "Tamaño de la empresa",
     [MODALITY]: "Modalidad",
+    [CONTRACT_TYPE]: "Tipo de contrato",
 };
 
 const emptyForm = {
@@ -46,6 +49,7 @@ const emptyForm = {
     [COUNTRY_COMPANY]: "",
     [COMPANY_SIZE]: "",
     [MODALITY]: "",
+    [CONTRACT_TYPE]: "",
 };
 
 const emptyFormErrors = {
@@ -55,6 +59,7 @@ const emptyFormErrors = {
     [EMPLOYEE_RESIDENCE]: null,
     [COMPANY_SIZE]: null,
     [MODALITY]: null,
+    [CONTRACT_TYPE]: null,
 };
 
 const Form = ({ setSalary }) => {
@@ -72,7 +77,35 @@ const Form = ({ setSalary }) => {
             setError(null);
             setFormErrors(emptyFormErrors);
 
-            setSalary("1000");
+            console.log("Enviando formulario:", form);
+
+            const payload = {
+                experience_level: form[LEVEL].value,
+                employment_type: form[CONTRACT_TYPE].value,
+                job_title: form[JOB_POSITION].value,
+                employee_residence: form[EMPLOYEE_RESIDENCE].value,
+                remote_ratio: form[MODALITY].value,
+                company_location: form[COUNTRY_COMPANY].value,
+                company_size: form[COMPANY_SIZE].value,
+            };
+
+            const response = await fetch(
+                "https://salary.free.beeceptor.com/predictions/TPOT/salaries",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Error al obtener el salario sugerido");
+            }
+
+            const data = await response.json();
+            setSalary(data.suggested_salary);
         } catch (err) {
             console.error("Error al enviar el formulario:", err);
             setError(
@@ -102,6 +135,9 @@ const Form = ({ setSalary }) => {
         }
         if (!form[MODALITY]) {
             errors[MODALITY] = "Este campo es obligatorio";
+        }
+        if (!form[CONTRACT_TYPE]) {
+            errors[CONTRACT_TYPE] = "Este campo es obligatorio";
         }
 
         setFormErrors(errors);
@@ -282,6 +318,28 @@ const Form = ({ setSalary }) => {
                                     required
                                     error={!!formErrors[MODALITY]}
                                     helperText={formErrors[MODALITY]}
+                                />
+                            )}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                        <Autocomplete
+                            options={CONTRACT_TYPES}
+                            getOptionLabel={(option) => option.name}
+                            value={form[CONTRACT_TYPE] || null}
+                            name={CONTRACT_TYPE}
+                            onChange={(_, newValue) => {
+                                handleChange(CONTRACT_TYPE, newValue);
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    name={CONTRACT_TYPE}
+                                    label={formLabels[CONTRACT_TYPE]}
+                                    required
+                                    error={!!formErrors[CONTRACT_TYPE]}
+                                    helperText={formErrors[CONTRACT_TYPE]}
                                 />
                             )}
                             fullWidth

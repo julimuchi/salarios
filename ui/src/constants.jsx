@@ -213,3 +213,22 @@ export const MODALITIES = [
         name: "Remoto",
     },
 ];
+
+export const CONTRACT_TYPES = [
+    {
+        value: "FT",
+        name: "Tiempo completo",
+    },
+    {
+        value: "PT",
+        name: "Medio tiempo",
+    },
+    {
+        value: "CT",
+        name: "Contrato",
+    },
+    {
+        value: "FL",
+        name: "Freelance",
+    },
+];
