@@ -90,7 +90,7 @@ const Form = ({ setSalary }) => {
             };
 
             const response = await fetch(
-                "https://salary.free.beeceptor.com/predictions/TPOT/salaries",
+                "https://api-salary-prediction.onrender.com/predictions/TPOT/salaries",
                 {
                     method: "POST",
                     headers: {
@@ -105,7 +105,7 @@ const Form = ({ setSalary }) => {
             }
 
             const data = await response.json();
-            setSalary(data.suggested_salary);
+            setSalary(data.sugested_salary);
         } catch (err) {
             console.error("Error al enviar el formulario:", err);
             setError(
